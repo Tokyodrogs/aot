@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kwenta — small business console</title>
+    <meta
+      name="description"
+      content="Kwenta is a free, offline-first console for small businesses: inventory, sales, VAT, profit, printable receipts and backups. No account, no subscription."
+    />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230f172a'/%3E%3Ctext x='16' y='22' font-size='16' text-anchor='middle' fill='%2322d3ee'%3E%E2%82%B1%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">&#8369;</span>
+          <div>
+            <strong>Kwenta</strong>
+            <small id="brandBusiness">business console</small>
+          </div>
+        </div>
+
+        <nav class="nav" id="nav">
+          <button class="nav-btn is-active" data-view="dashboard" type="button">
+            <span>Dashboard</span>
+          </button>
+          <button class="nav-btn" data-view="sell" type="button">
+            <span>Sell</span>
+          </button>
+          <button class="nav-btn" data-view="inventory" type="button">
+            <span>Inventory</span>
+          </button>
+          <button class="nav-btn" data-view="records" type="button">
+            <span>Records</span>
+          </button>
+          <button class="nav-btn" data-view="settings" type="button">
+            <span>Settings</span>
+          </button>
+        </nav>
+
+        <div class="sidebar-foot">
+          <p class="hint" id="storageNote">Saved in this browser only.</p>
+        </div>
+      </aside>
+
+      <main class="main">
+        <!-- DASHBOARD -->
+        <section class="view is-active" id="view-dashboard">
+          <header class="view-head">
+            <div>
+              <h1>Dashboard</h1>
+              <p class="sub">Where the money actually went.</p>
+            </div>
+            <div class="view-actions">
+              <label class="seg">
+                <span>Range</span>
+                <select id="rangeSelect">
+                  <option value="7">Last 7 days</option>
+                  <option value="14" selected>Last 14 days</option>
+                  <option value="30">Last 30 days</option>
+                  <option value="0">All time</option>
+                </select>
+              </label>
+            </div>
+          </header>
+
+          <div class="cards">
+            <article class="card stat">
+              <span class="stat-label">Sales</span>
+              <strong class="stat-value" id="kpiSales">&mdash;</strong>
+              <small class="stat-meta" id="kpiSalesMeta">&mdash;</small>
+            </article>
+            <article class="card stat">
+              <span class="stat-label">Profit</span>
+              <strong class="stat-value" id="kpiProfit">&mdash;</strong>
+              <small class="stat-meta" id="kpiProfitMeta">&mdash;</small>
+            </article>
+            <article class="card stat">
+              <span class="stat-label">Orders</span>
+              <strong class="stat-value" id="kpiOrders">&mdash;</strong>
+              <small class="stat-meta" id="kpiOrdersMeta">&mdash;</small>
+            </article>
+            <article class="card stat">
+              <span class="stat-label">Stock at cost</span>
+              <strong class="stat-value" id="kpiStock">&mdash;</strong>
+              <small class="stat-meta" id="kpiStockMeta">&mdash;</small>
+            </article>
+          </div>
+
+          <div class="grid-2">
+            <article class="card">
+              <h2>Revenue &amp; profit</h2>
+              <div class="chart" id="chart"></div>
+            </article>
+
+            <article class="card">
+              <h2>Best sellers</h2>
+              <ol class="rank" id="topProducts"></ol>
+            </article>
+          </div>
+
+          <article class="card">
+            <h2>Needs attention</h2>
+            <div class="alerts" id="alerts"></div>
+          </article>
+        </section>
+
+        <!-- SELL -->
+        <section class="view" id="view-sell">
+          <header class="view-head">
+            <div>
+              <h1>Sell</h1>
+              <p class="sub">Ring it up. Stock and profit update the moment you save.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn ghost" id="clearSale" type="button">Clear</button>
+            </div>
+          </header>
+
+          <div class="sell-grid">
+            <article class="card">
+              <h2>Pick products</h2>
+              <input class="input" id="posSearch" type="search" placeholder="Search products or tap a category" autocomplete="off" />
+              <div class="chips" id="posCategories"></div>
+              <div class="pos-grid" id="posGrid"></div>
+            </article>
+
+            <article class="card receipt">
+              <h2>Receipt <span class="pill" id="receiptNo"></span></h2>
+              <div id="cart"></div>
+
+              <div class="row">
+                <label class="field">
+                  <span>Discount %</span>
+                  <input class="input" id="saleDiscount" type="number" min="0" max="100" step="1" value="0" />
+                </label>
+                <label class="field">
+                  <span>Payment</span>
+                  <select class="input" id="salePayment">
+                    <option>Cash</option>
+                    <option>GCash</option>
+                    <option>Maya</option>
+                    <option>Bank transfer</option>
+                    <option>Card</option>
+                  </select>
+                </label>
+              </div>
+              <label class="field">
+                <span>Customer</span>
+                <input class="input" id="saleCustomer" type="text" placeholder="Walk-in" autocomplete="off" />
+              </label>
+
+              <dl class="totals" id="saleTotals"></dl>
+
+              <div class="actions">
+                <button class="btn primary" id="saveSale" type="button">Save sale</button>
+                <button class="btn ghost" id="printReceipt" type="button">Print receipt</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- INVENTORY -->
+        <section class="view" id="view-inventory">
+          <header class="view-head">
+            <div>
+              <h1>Inventory</h1>
+              <p class="sub">Cost in, price out, what is left on the shelf.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn ghost" id="exportProducts" type="button">Export CSV</button>
+              <button class="btn primary" id="addProduct" type="button">Add product</button>
+            </div>
+          </header>
+
+          <article class="card">
+            <div class="toolbar">
+              <input class="input" id="invSearch" type="search" placeholder="Search inventory" autocomplete="off" />
+              <label class="seg">
+                <span>Sort</span>
+                <select id="invSort">
+                  <option value="name">Name</option>
+                  <option value="stock">Stock (low first)</option>
+                  <option value="value">Stock value</option>
+                  <option value="category">Category</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="invTable">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th class="num">Cost</th>
+                    <th class="num">Price</th>
+                    <th class="num">Margin</th>
+                    <th class="num">Stock</th>
+                    <th class="num">Value</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- RECORDS -->
+        <section class="view" id="view-records">
+          <header class="view-head">
+            <div>
+              <h1>Records</h1>
+              <p class="sub">Every sale, searchable, printable, exportable.</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn ghost" id="exportSales" type="button">Export CSV</button>
+            </div>
+          </header>
+
+          <article class="card">
+            <div class="toolbar">
+              <input class="input" id="recSearch" type="search" placeholder="Search receipt no, customer, product" autocomplete="off" />
+              <label class="seg">
+                <span>Show</span>
+                <select id="recRange">
+                  <option value="7">7 days</option>
+                  <option value="14" selected>14 days</option>
+                  <option value="30">30 days</option>
+                  <option value="0">All time</option>
+                </select>
+              </label>
+            </div>
+            <div class="table-wrap">
+              <table class="table" id="recTable">
+                <thead>
+                  <tr>
+                    <th>Receipt</th>
+                    <th>Date</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th class="num">Total</th>
+                    <th class="num">Profit</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" id="view-settings">
+          <header class="view-head">
+            <div>
+              <h1>Settings</h1>
+              <p class="sub">Your business, your tax setup, your backup.</p>
+            </div>
+          </header>
+
+          <div class="grid-2">
+            <article class="card">
+              <h2>Business</h2>
+              <label class="field"><span>Business name</span><input class="input" id="setName" type="text" /></label>
+              <label class="field"><span>Address</span><input class="input" id="setAddress" type="text" /></label>
+              <label class="field"><span>TIN</span><input class="input" id="setTin" type="text" /></label>
+              <label class="field"><span>Phone</span><input class="input" id="setPhone" type="text" /></label>
+            </article>
+
+            <article class="card">
+              <h2>Receipts &amp; tax</h2>
+              <div class="row">
+                <label class="field"><span>Receipt prefix</span><input class="input" id="setPrefix" type="text" maxlength="6" /></label>
+                <label class="field"><span>Low-stock alert at</span><input class="input" id="setLowStock" type="number" min="0" step="1" /></label>
+              </div>
+              <label class="check"><input type="checkbox" id="setVat" /><span>Charge VAT</span></label>
+              <label class="check"><input type="checkbox" id="setVatInclusive" /><span>Prices already include VAT (VAT = total &times; 12/112)</span></label>
+              <label class="field"><span>VAT rate</span><input class="input" id="setVatRate" type="number" min="0" max="0.5" step="0.01" /></label>
+              <p class="hint">
+                Kwenta computes VAT for clarity on your receipt. It is bookkeeping software, not a BIR-accredited
+                CAS &mdash; keep official receipts for filings.
+              </p>
+            </article>
+          </div>
+
+          <article class="card">
+            <h2>Data</h2>
+            <p class="hint">
+              Everything lives in this browser's local storage. Export a backup before clearing browser data or
+              switching devices &mdash; the file is plain JSON and re-imports cleanly.
+            </p>
+            <div class="actions">
+              <button class="btn primary" id="saveSettings" type="button">Save settings</button>
+              <button class="btn ghost" id="backup" type="button">Download backup</button>
+              <button class="btn ghost" id="restore" type="button">Restore backup</button>
+              <button class="btn ghost" id="loadSample" type="button">Load sample data</button>
+              <button class="btn danger" id="wipe" type="button">Erase all data</button>
+            </div>
+            <input type="file" id="restoreFile" accept="application/json,.json" hidden />
+            <p class="hint" id="dataSummary"></p>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <!-- Product editor -->
+    <dialog class="modal" id="productDialog">
+      <form method="dialog" id="productForm">
+        <h2 id="productDialogTitle">Add product</h2>
+        <div class="row">
+          <label class="field"><span>Name</span><input class="input" id="pName" type="text" required /></label>
+          <label class="field"><span>SKU</span><input class="input" id="pSku" type="text" /></label>
+        </div>
+        <div class="row">
+          <label class="field"><span>Category</span><input class="input" id="pCategory" type="text" list="categoryList" /></label>
+          <datalist id="categoryList"></datalist>
+          <label class="field"><span>Unit</span><input class="input" id="pUnit" type="text" placeholder="pc" /></label>
+        </div>
+        <div class="row">
+          <label class="field"><span>Cost</span><input class="input" id="pCost" type="number" min="0" step="0.01" /></label>
+          <label class="field"><span>Price</span><input class="input" id="pPrice" type="number" min="0" step="0.01" /></label>
+          <label class="field"><span>Stock</span><input class="input" id="pStock" type="number" min="0" step="1" /></label>
+        </div>
+        <p class="hint" id="productMargin"></p>
+        <div class="actions">
+          <button class="btn ghost" value="cancel" type="submit">Cancel</button>
+          <button class="btn primary" id="productSave" value="save" type="submit">Save product</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Printable receipt -->
+    <dialog class="modal" id="receiptDialog">
+      <div class="receipt-print" id="receiptPrint"></div>
+      <div class="actions no-print">
+        <button class="btn ghost" id="closeReceipt" type="button">Close</button>
+        <button class="btn primary" id="doPrint" type="button">Print</button>
+      </div>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
